@@ -69,12 +69,12 @@ body {
 /* Main marketing message and sign up button */
 .jumbotron {
   text-align: center;
-  background: url("/images/banner.png") no-repeat center center; 
+  background: url("/images/banner.jpg") no-repeat center center; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-  color: #151515;
+  color: white;
   text-shadow: 0 2px 2px rgba(150,150,150,.4);
 }
 .jumbotron .btn {
