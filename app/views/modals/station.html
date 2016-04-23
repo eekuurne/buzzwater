@@ -2,7 +2,30 @@
     <h3 class="modal-title">{{chosenStation.name}}</h3>
 </div>
 <div class="modal-body">
-    <p>Tähän väliin tulee dataa.<p>
+  <nvd3 class="chart" options="options" data="data"></nvd3>
+  <div class="row">
+    <div class="col-md-2">
+      <p class="input-group">
+        <input type="text" class="form-control" uib-datepicker-popup="dd.MM.yyyy" ng-model="start" is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+        </span>
+      </p>
+    </div>
+    <div class="col-md-2">
+      <p class="input-group">
+        <input type="text" class="form-control" uib-datepicker-popup="dd.MM.yyyy" ng-model="end" is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+        </span>
+      </p>
+    </div>
+    <div class="col-md-2">
+      <p class="input-group">
+        <button type="button" class="btn btn-default" ng-click="getData()">pls</i></button>
+      </p>
+    </div>
+  </div>
 </div>
 <div class="modal-footer">
     <button class="btn" type="button" ng-click="cancel()">SULJE</button>

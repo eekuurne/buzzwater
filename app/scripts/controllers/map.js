@@ -30,7 +30,6 @@ angular.module('buzzwaterApp')
 
         angular.forEach(response.data.data, function(value, key) {
           $scope.markers.push({id: key, coords: {latitude: value.LAT, longitude: value.LONG}, flowQuality: value.flowQuality, name: value.Name});
-          console.log(value);
         });
 
 
@@ -60,7 +59,7 @@ angular.module('buzzwaterApp')
         scope: $scope,
         windowClass: 'app-modal-window',
       });
-    
+
     modalInstance.result.then(function (formPassword) {
       if ($scope.checkPassword(formPassword)) {
         $location.path('/main');
@@ -72,9 +71,150 @@ angular.module('buzzwaterApp')
 
   }]);
 
- angular.module('buzzwaterApp').controller('ModalInstanceCtrl', function ($scope, $uibModalInstance) {
-
+ angular.module('buzzwaterApp').controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, apiService) {
      $scope.cancel = function () {
          $uibModalInstance.dismiss('cancel');
      };
+
+     $scope.getData = function() {
+       apiService.getData($scope.chosenStation.id, $scope.start, $scope.end, function(data) {
+         $scope.data.push({key: 'output quantity', type: "line", yAxis: 1, values:data.outputs});
+         $scope.data.push({key: 'rainfall', type: "line", yAxis: 2, values:data.rainfalls});
+         $scope.data.push({key: 'runtime percentage', type: "line", yAxis: 2, values:data.percentages});
+         $scope.data.push({key: 'total runtime', type: "line", yAxis: 2, values:data.totals});
+       });
+     }
+
+     $scope.options = {
+                chart: {
+                    type: 'multiChart',
+                    height: 600,
+                    margin : {
+                        top: 30,
+                        right: 60,
+                        bottom: 50,
+                        left: 70
+                    },
+                    color: d3.scale.category10().range(),
+                    //useInteractiveGuideline: true,
+                    transitionDuration: 500,
+                    xAxis: {
+                        tickFormat: function(d){
+                            return d3.time.format('%x')(new Date(d));
+                        }
+                    },
+                    yAxis1: {
+                        tickFormat: function(d){
+                            return d3.format(',.1f')(d);
+                        }
+                    },
+                    yAxis2: {
+                        tickFormat: function(d){
+                            return d3.format(',.1f')(d);
+                        }
+                    },
+                    tooltip: {
+                        contentGenerator: function (e) {
+                          var series = e.series[0];
+                          if (series.value === null) return;
+                          var date = new Date(parseInt(e.value));
+
+                          var rows =
+                            "<tr>" +
+                              "<td class='key'>" + 'Date: ' + "</td>" +
+                              "<td class='x-value'>" +date+ "</td>" +
+                            "</tr>" +
+                            "<tr>" +
+                              "<td class='key'></td>" +
+                              "<td class='x-value'><strong>" + (series.value?series.value.toFixed(2):0) + "</strong></td>" +
+                            "</tr>";
+
+                          var header =
+                            "<thead>" +
+                              "<tr>" +
+                                "<td class='legend-color-guide'><div style='background-color: " + series.color + ";'></div></td>" +
+                                "<td class='key'><strong>" + series.key + "</strong></td>" +
+                              "</tr>" +
+                            "</thead>";
+
+                          return "<table>" +
+                              header +
+                              "<tbody>" +
+                                rows +
+                              "</tbody>" +
+                            "</table>";
+                        }
+                    }
+                }
+            };
+
+      $scope.start = new Date(2015, 11, 0);
+      $scope.end = new Date(2015, 11, 7);
+      $scope.data = [];
+
+      $scope.getData();
+
+
+      $scope.inlineOptions = {
+        customClass: getDayClass,
+        minDate: new Date(),
+        showWeeks: true
+      };
+
+      $scope.dateOptions = {
+        dateDisabled: disabled,
+        formatYear: 'yy',
+        maxDate: new Date(2020, 5, 22),
+        minDate: new Date(),
+        startingDay: 1
+      };
+
+      // Disable weekend selection
+      function disabled(data) {
+        var date = data.date,
+          mode = data.mode;
+        return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
+      }
+
+      $scope.toggleMin = function() {
+        $scope.inlineOptions.minDate = $scope.inlineOptions.minDate ? null : new Date();
+        $scope.dateOptions.minDate = $scope.inlineOptions.minDate;
+      };
+
+      $scope.toggleMin();
+
+      $scope.open1 = function() {
+        $scope.popup1.opened = true;
+      };
+
+      $scope.open2 = function() {
+        $scope.popup2.opened = true;
+      };
+
+      $scope.popup1 = {
+        opened: false
+      };
+
+      $scope.popup2 = {
+        opened: false
+      };
+
+      function getDayClass(data) {
+        var date = data.date,
+          mode = data.mode;
+        if (mode === 'day') {
+          var dayToCheck = new Date(date).setHours(0,0,0,0);
+
+          for (var i = 0; i < $scope.events.length; i++) {
+            var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
+
+            if (dayToCheck === currentDay) {
+              return $scope.events[i].status;
+            }
+          }
+        }
+
+        return '';
+      }
+
  });
