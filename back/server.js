@@ -20,18 +20,46 @@ connection.connect();
 var router = express.Router();
 
 router.get('/', function(req, res) {
-  res.json({ message: 'hooray! welcome to our api!' });
+  res.json({ message: 'NYT SITÄ DATAA SITTEN' });
 });
 
 router.get('/targets', function(req, res) {
 
+  var targetsWithFlowQuality = {};
+
   var q = 'SELECT Code, Target_Type, Name, LAT, LONG FROM HSY_TARGETS WHERE Target_Type = \'JVP\' AND LAT IS NOT NULL AND LONG IS NOT NULL';
   var sqlReq = new sql.Request(connection).query(q)
-  .then(function(recordset) {
+  .then(function(targetResult) {
 
-    res.json({
-      success: true,
-      data: recordset
+    for (var i = 0; i < targetResult.length; i++) {
+      var tar = targetResult[i];
+      var key = tar.Target_Type + tar.Code;
+      targetsWithFlowQuality[key] = tar;
+    }
+
+    var flowQualityQuery = 'SELECT STATION, QUALITY FROM FLOW_QUALITY';
+    var flowQualitySqlReq = new sql.Request(connection).query(flowQualityQuery)
+    .then(function(flowQualityResult) {
+
+      for (var i = 0; i < flowQualityResult.length; i++) {
+        var flowQuality = flowQualityResult[i];
+        if (targetsWithFlowQuality[flowQuality.STATION]) {
+          targetsWithFlowQuality[flowQuality.STATION].flowQuality = flowQuality.QUALITY;
+        }
+      }
+
+      res.json({
+        success: true,
+        data: targetsWithFlowQuality,
+      });
+
+    }).catch(function(err) {
+      console.log('query (' + outputQuery + ') meni vähä rikki');
+
+      res.json({
+        success: false,
+        data: err
+      });
     });
 
   }).catch(function(err) {
@@ -53,7 +81,7 @@ router.get('/output/', function(req, res) {
 
   var resultWithOutputVolumeAndRainData = {};
 
-  var outputQuery = 'SELECT OUTPUT_QUANTITY, STS FROM HSY_MES_PUMP_1H WHERE STS > \'' + start + '\' AND STATION = \'' + station + '\'';
+  var outputQuery = 'SELECT OUTPUT_QUANTITY, STS, P1_RUN_TIME, P2_RUN_TIME, P3_RUN_TIME, P4_RUN_TIME, P5_RUN_TIME, P6_RUN_TIME FROM HSY_MES_PUMP_1H WHERE STS > \'' + start + '\' AND STATION = \'' + station + '\'';
   if (end) {
     outputQuery += ' AND STS < \'' + end + '\'';
   }
@@ -84,18 +112,21 @@ router.get('/output/', function(req, res) {
       max = date > max ? date : max;
       min = date < min ? date : min;
 
+      var pumpUptime = calculatePumpUptimeData(output);
+
       resultWithOutputVolumeAndRainData[date] = {
         outputQuantity: output.OUTPUT_QUANTITY,
-        rainfall: 0
+        rainfall: 0,
+        uptime: pumpUptime
       };
 
     }
 
     outputMedian = median(outputMedianArray);
 
-    var rainfallQuery = 'SELECT Rainfall, DateAndTimeUTC from HSY_RAINFALL_1H WHERE DateAndTimeUTC > \'' + start + '\' AND STATION = \'' + station + '\'';
+    var rainfallQuery = 'SELECT Rainfall, DateAndTime from HSY_RAINFALL_1H WHERE DateAndTime > \'' + start + '\' AND STATION = \'' + station + '\'';
     if (end) {
-      rainfallQuery += ' AND DateAndTimeUTC < \'' + end + '\'';
+      rainfallQuery += ' AND DateAndTime < \'' + end + '\'';
     }
 
     console.log(rainfallQuery);
@@ -107,7 +138,7 @@ router.get('/output/', function(req, res) {
 
       for (var i = 0; i < rainfallResult.length; i++) {
         var rainfall = rainfallResult[i];
-        var date = new Date(rainfall.DateAndTimeUTC).getTime();
+        var date = new Date(rainfall.DateAndTime).getTime();
 
         rainfallMedianArray.push(rainfall.Rainfall);
 
@@ -161,7 +192,6 @@ router.get('/customQuery/:query', function(req, res) {
 
   var sqlReq = new sql.Request(connection).query(req.params.query)
   .then(function(recordset) {
-    // console.dir(recordset);
 
     res.json({
       success: true,
@@ -190,6 +220,38 @@ app.use(function(req, res, next) {
 app.listen(port);
 console.log('Magic happens on port ' + port);
 
+function calculatePumpUptimeData(d) {
+
+  var runtimes = [d.P1_RUN_TIME, d.P2_RUN_TIME, d.P3_RUN_TIME, d.P4_RUN_TIME, d.P5_RUN_TIME, d.P6_RUN_TIME];
+  var pumpCount = 0;
+  var totalRuntime = 0;
+  var calculatedData = {
+
+  };
+
+  for (var i = 0; i < runtimes.length; i++) {
+    var pumpRuntime = runtimes[i];
+    if (pumpRuntime) {
+      pumpCount += 1;
+      pumpRuntime = pumpRuntime > 100 ? pumpRuntime / 1000 : pumpRuntime;
+      if (pumpRuntime > 60 && pumpRuntime < 100) {
+        pumpRuntime = 60;
+      }
+      else if (pumpRuntime >= 100) {
+        pumpRuntime = pumpRuntime / 1000;
+      }
+      totalRuntime += pumpRuntime;
+      calculatedData['P' + (i+1)] = pumpRuntime;
+    }
+  }
+
+  calculatedData.pumpCount = pumpCount;
+  calculatedData.totalRuntime = totalRuntime;
+  calculatedData.uptimePercentage = totalRuntime / (pumpCount * 60) * 100;
+
+  return calculatedData;
+}
+
 function median(values) {
 
   values.sort( function(a,b) {return a - b;} );
@@ -209,37 +271,3 @@ function average(values) {
   }
   return total / values.length;
 }
-
-// sql.connect("mssql://devuser1:devuser123@10.144.72.11/AWR").then(function() {
-//     // Query
-//
-// 	new sql.Request().query('select TOP 2 * from HSY_MES_PUMP_1H').then(function(recordset) {
-//     //SELECT t.*, %%physloc%% as "%%physloc%%" FROM AWR.dbo.HSY_MES_PUMP_1H t
-// 		console.dir(recordset);
-// 	}).catch(function(err) {
-//     console.log('query meni vähä rikki');
-// 		console.log(err);
-// 	});
-//
-//     // Stored Procedure
-//
-// 	// new sql.Request()
-// 	// .input('input_parameter', sql.Int, value)
-//   //   .output('output_parameter', sql.VarChar(50))
-// 	// .execute('procedure_name').then(function(recordsets) {
-// 	// 	console.dir(recordsets);
-// 	// }).catch(function(err) {
-// 	// 	// ... execute error checks
-// 	// });
-//
-// 	// ES6 Tagged template literals (experimental)
-//
-// 	// sql.query`select * from mytable where id = ${value}`.then(function(recordset) {
-// 	// 	console.dir(recordset);
-// 	// }).catch(function(err) {
-// 	// 	// ... query error checks
-// 	// });
-// }).catch(function(err) {
-// 	// ... connect error checks
-//   console.log('kaikki meni vituiks');
-// });
