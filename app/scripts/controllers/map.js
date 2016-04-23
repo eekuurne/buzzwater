@@ -149,8 +149,8 @@ angular.module('buzzwaterApp')
                 }
             };
 
-      $scope.start = new Date(2015, 11, 0);
-      $scope.end = new Date(2015, 11, 7);
+      $scope.start = new Date(2016, 0, 1);
+      $scope.end = new Date(2016, 1, -1);
       $scope.data = [];
 
       $scope.getData();
