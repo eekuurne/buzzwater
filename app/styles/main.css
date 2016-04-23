@@ -80,6 +80,10 @@ body, html {
   color: orange;
 }
 
+.glyphicon-tint {
+  color: #4c5c82;
+}
+
 /* Main marketing message and sign up button */
 .jumbotron {
   text-align: center;
@@ -129,8 +133,64 @@ body, html {
 
 .angular-google-map-container {
   margin-top: 6vh;
-  height: 86.6vh;
-  margin-bottom: 7.4vh;
+  height: 86.7vh;
+  margin-bottom: 7.3vh;
+}
+
+.help {
+    background-color: #FFFF73;
+    border-radius: 10px;
+    display: none;
+    opacity: 0.9;
+    padding: 10px;
+    z-index: 100;
+}
+
+.help_link:hover + span {
+    display: inline;
+}
+
+/*
+.app-modal-window .modal-dialog {
+  width:90%; height: 80%;
+  position: absolute;
+  top:0; bottom: 0; left: 0; right: 0;
+  margin: auto
+}
+*/
+
+.modal-dialog {
+  width: 94%;
+  height: 82%;
+  margin: 0;
+  padding: 0;
+  margin-left: 3%;
+  margin-top: 4%;
+  border-radius: 3px;
+}
+
+.modal-content {
+  height: auto;
+  min-height: 100%;
+  border-radius: 0;
+  border-radius: 3px;
+}
+
+.modal-header {
+  background-color: #f4f4f4;
+  border-radius: 3px;
+}
+
+.modal-body {
+
+}
+
+.modal-footer {
+  position: fixed;
+  bottom: 0;
+  width: 99.9%;
+  background-color: #f4f4f4;
+  border-radius: 3px;
 }
 
 /* Responsive: Portrait tablets and up */
