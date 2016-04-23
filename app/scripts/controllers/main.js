@@ -9,7 +9,6 @@
  */
 angular.module('buzzwaterApp')
   .controller('MainCtrl', function ($scope, $http) {
-
      $scope.options = {
                 chart: {
                     type: 'multiChart',
@@ -40,6 +39,7 @@ angular.module('buzzwaterApp')
                     }
                 }
             };
+
             var start = new Date(2016, 3, 1);
             $scope.data = [{key: 'series1', type: "line", yAxis: 1, values:[]}];
             var values = [];
@@ -57,6 +57,4 @@ angular.module('buzzwaterApp')
                 console.log(data);
               }
             );
-
-
   });
