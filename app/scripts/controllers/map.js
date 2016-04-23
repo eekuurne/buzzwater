@@ -49,9 +49,9 @@ angular.module('buzzwaterApp')
 
     $scope.chosenStation = {name: "Pumppaamon nimi"};
 
-    $scope.openStation = function (stationName) {
+    $scope.openStation = function (station) {
 
-      $scope.chosenStation.name = stationName;
+      $scope.chosenStation = station;
 
       var modalInstance = $uibModal.open({
         templateUrl: '../views/modals/station.html',
