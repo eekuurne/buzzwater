@@ -72,17 +72,19 @@ angular.module('buzzwaterApp')
                 }
             };
 
-      var start = new Date(2015,11, 1);
-      var end = new Date(2016, 0, 1);
-      var station = "JVP3122";
+      var start = new Date(2015, 11, 0);
+      var end = new Date(2015, 11, 7);
+      var station = "JVP1020";
       $scope.data = [];
 
-      apiService.getData(station, start, end, function(data1, data2) {
-        console.log(data1)
-        console.log(data2)
-
-        $scope.data.push({key: 'output quantity', type: "line", yAxis: 1, values:data1});
-        $scope.data.push({key: 'rainfall', type: "line", yAxis: 2, values:data2});
+      apiService.getData(station, start, end, function(data) {
+        $scope.data.push({key: 'output quantity', type: "line", yAxis: 1, values:data.outputs});
+        $scope.data.push({key: 'rainfall', type: "line", yAxis: 2, values:data.rainfalls});
+        $scope.data.push({key: 'runtime percentage', type: "line", yAxis: 2, values:data.percentages});
+        $scope.data.push({key: 'total runtime', type: "line", yAxis: 2, values:data.totals});
+        console.log($scope.data)
       });
+
+
 
   });
