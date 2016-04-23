@@ -12,7 +12,7 @@ angular.module('buzzwaterApp')
      $scope.options = {
                 chart: {
                     type: 'multiChart',
-                    height: 450,
+                    height: 800,
                     margin : {
                         top: 30,
                         right: 60,
@@ -36,17 +36,53 @@ angular.module('buzzwaterApp')
                         tickFormat: function(d){
                             return d3.format(',.1f')(d);
                         }
+                    },
+                    tooltip: {
+                        contentGenerator: function (e) {
+                          var series = e.series[0];
+                          if (series.value === null) return;
+                          var date = new Date(parseInt(e.value));
+
+                          var rows =
+                            "<tr>" +
+                              "<td class='key'>" + 'Date: ' + "</td>" +
+                              "<td class='x-value'>" +date+ "</td>" +
+                            "</tr>" +
+                            "<tr>" +
+                              "<td class='key'></td>" +
+                              "<td class='x-value'><strong>" + (series.value?series.value.toFixed(2):0) + "</strong></td>" +
+                            "</tr>";
+
+                          var header =
+                            "<thead>" +
+                              "<tr>" +
+                                "<td class='legend-color-guide'><div style='background-color: " + series.color + ";'></div></td>" +
+                                "<td class='key'><strong>" + series.key + "</strong></td>" +
+                              "</tr>" +
+                            "</thead>";
+
+                          return "<table>" +
+                              header +
+                              "<tbody>" +
+                                rows +
+                              "</tbody>" +
+                            "</table>";
+                        }
                     }
                 }
             };
 
-      var start = new Date(2016, 1, 2);
-      var station = "JVP1020";
-      $scope.data = [{key: 'series1', type: "line", yAxis: 1, values:[]}];
+      var start = new Date(2015,11, 1);
+      var end = new Date(2016, 0, 1);
+      var station = "JVP3122";
+      $scope.data = [];
 
-      apiService.getData(station, start, function(data1, data2) {
-        $scope.data = [{key: 'series1', type: "line", yAxis: 1, values:data1}];
-        $scope.data = [{key: 'series1', type: "line", yAxis: 1, values:data2}];
+      apiService.getData(station, start, end, function(data1, data2) {
+        console.log(data1)
+        console.log(data2)
+
+        $scope.data.push({key: 'output quantity', type: "line", yAxis: 1, values:data1});
+        $scope.data.push({key: 'rainfall', type: "line", yAxis: 2, values:data2});
       });
 
   });
