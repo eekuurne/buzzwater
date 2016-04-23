@@ -80,8 +80,11 @@ router.get('/output/', function(req, res) {
   var end = typeof(req.query.end) !== 'undefined' ? req.query.end : undefined;
 
   var resultWithOutputVolumeAndRainData = {};
+  //var outputQuery = 'SELECT OUTPUT_QUANTITY, STS, P1_RUN_TIME, P2_RUN_TIME, P3_RUN_TIME, P4_RUN_TIME, P5_RUN_TIME, P6_RUN_TIME FROM HSY_MES_PUMP_1H WHERE STS > \'' + start + '\' AND STATION = \'' + station + '\'';
 
-  var outputQuery = 'SELECT OUTPUT_QUANTITY, STS, P1_RUN_TIME, P2_RUN_TIME, P3_RUN_TIME, P4_RUN_TIME, P5_RUN_TIME, P6_RUN_TIME FROM HSY_MES_PUMP_1H WHERE STS > \'' + start + '\' AND STATION = \'' + station + '\'';
+  var outputQuery = 'SELECT HSY_MES_PUMP_1H.OUTPUT_QUANTITY, HSY_MES_PUMP_1H.STS, HSY_MES_PUMP_1H.P1_RUN_TIME, HSY_MES_PUMP_1H.P2_RUN_TIME, HSY_MES_PUMP_1H.P3_RUN_TIME, HSY_MES_PUMP_1H.P4_RUN_TIME, HSY_MES_PUMP_1H.P5_RUN_TIME, HSY_MES_PUMP_1H.P6_RUN_TIME, HSY_TARGETS.Pump_Count FROM HSY_MES_PUMP_1H JOIN HSY_TARGETS ON HSY_MES_PUMP_1H.STATION=HSY_TARGETS.Target_Type + HSY_TARGETS.Code WHERE HSY_MES_PUMP_1H.STS > \'' + start + '\' AND HSY_MES_PUMP_1H.STATION = \'' + station + '\'';
+
+//  var outputQuery = 'SELECT HSY_MES_PUMP_1H.OUTPUT_QUANTITY AS OUTPUT_QUANTITY, HSY_MES_PUMP_1H.STS AS STS, HSY_MES_PUMP_1H.P1_RUN_TIME AS P1_RUN_TIME, HSY_MES_PUMP_1H.P2_RUN_TIME AS P2_RUN_TIME, HSY_MES_PUMP_1H.P3_RUN_TIME AS P3_RUN_TIME, HSY_MES_PUMP_1H.P4_RUN_TIME AS P4_RUN_TIME, HSY_MES_PUMP_1H.P5_RUN_TIME AS P5_RUN_TIME, HSY_MES_PUMP_1H.P6_RUN_TIME AS P6_RUN_TIME, HSY_TARGETS.Pump_Count AS Pump_Count FROM HSY_MES_PUMP_1H LEFT JOIN HSY_TARGETS ON HSY_MES_PUMP_1H.STATION = (HSY_TARGETS.Target_Type + HSY_TARGETS.Code) AS HSY_TARGETS.STATION WHERE STS > \'' + start + '\' AND STATION = \'' + station + '\'';
   if (end) {
     outputQuery += ' AND STS < \'' + end + '\'';
   }
@@ -223,7 +226,7 @@ console.log('Magic happens on port ' + port);
 function calculatePumpUptimeData(d) {
 
   var runtimes = [d.P1_RUN_TIME, d.P2_RUN_TIME, d.P3_RUN_TIME, d.P4_RUN_TIME, d.P5_RUN_TIME, d.P6_RUN_TIME];
-  var pumpCount = 0;
+  var pumpCount = d.Pump_Count;
   var totalRuntime = 0;
   var calculatedData = {
 
@@ -232,14 +235,15 @@ function calculatePumpUptimeData(d) {
   for (var i = 0; i < runtimes.length; i++) {
     var pumpRuntime = runtimes[i];
     if (pumpRuntime) {
-      pumpCount += 1;
       pumpRuntime = pumpRuntime > 100 ? pumpRuntime / 1000 : pumpRuntime;
+
       if (pumpRuntime > 60 && pumpRuntime < 100) {
         pumpRuntime = 60;
       }
       else if (pumpRuntime >= 100) {
         pumpRuntime = pumpRuntime / 1000;
       }
+
       totalRuntime += pumpRuntime;
       calculatedData['P' + (i+1)] = pumpRuntime;
     }
