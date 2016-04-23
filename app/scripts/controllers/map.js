@@ -12,8 +12,9 @@ angular.module('buzzwaterApp')
 
     uiGmapGoogleMapApi.then(function(maps) {
 
-      $scope.map = { center: { latitude: 60.28711111111111, longitude: 25.01188888888889 }, zoom: 9 };
+      $scope.map = { center: { latitude: 60.26, longitude: 24.92 }, zoom: 11 };
       $scope.markers = [];
+      $scope.options = {icon:'url/images/icon.png'};
 
       // Get marker coordinates from the database
       $http({
