@@ -78,6 +78,7 @@ angular.module('buzzwaterApp')
 
      $scope.getData = function() {
        apiService.getData($scope.chosenStation.id, $scope.start, $scope.end, function(data) {
+         $scope.data = [];
          $scope.data.push({key: 'output quantity', type: "line", yAxis: 1, values:data.outputs});
          $scope.data.push({key: 'rainfall', type: "line", yAxis: 2, values:data.rainfalls});
          $scope.data.push({key: 'runtime percentage', type: "line", yAxis: 2, values:data.percentages});
