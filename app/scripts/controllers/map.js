@@ -89,7 +89,7 @@ angular.module('buzzwaterApp')
      $scope.options = {
                 chart: {
                     type: 'multiChart',
-                    height: 600,
+                    height: 450,
                     margin : {
                         top: 30,
                         right: 60,
