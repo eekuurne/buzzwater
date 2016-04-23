@@ -1,3 +1,6 @@
+.angular-google-map-container { height: 400px; }
+
+
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
@@ -36,7 +39,7 @@ body {
 }
 
 .nav {
-  
+
 }
 
 /* Custom page footer */
@@ -69,7 +72,7 @@ body {
 /* Main marketing message and sign up button */
 .jumbotron {
   text-align: center;
-  background: url("/images/banner.jpg") no-repeat center center; 
+  background: url("/images/banner.jpg") no-repeat center center;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
