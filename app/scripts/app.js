@@ -25,9 +25,9 @@ angular
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
       })
-      .when('/buzz', {
-        templateUrl: 'views/buzz.html',
-        controller: 'MainCtrl'
+      .when('/map', {
+        templateUrl: 'views/map.html',
+        controller: 'MapCtrl'
       })
       .when('/water', {
         templateUrl: 'views/water.html',

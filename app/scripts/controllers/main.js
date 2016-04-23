@@ -8,11 +8,7 @@
  * Controller of the buzzwaterApp
  */
 angular.module('buzzwaterApp')
-  .controller('MainCtrl', function ($scope, $http, uiGmapGoogleMapApi) {
-    uiGmapGoogleMapApi.then(function(maps) {
-      $scope.map = { center: { latitude: 60.28711111111111, longitude: 25.01188888888889 }, zoom: 8 };
-      $scope.marker = {id: 1, coords: {latitude: 60.28711111111111, longitude:25.01188888888889}}
-     });
+  .controller('MainCtrl', function ($scope, $http) {
 
      $scope.options = {
                 chart: {
