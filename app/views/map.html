@@ -1,12 +1,57 @@
 <div class="wrapper">
 	<ui-gmap-google-map center='map.center' zoom='map.zoom' options="options">
 		<div ng-repeat="marker in markers">
-		  <ui-gmap-marker
-		    idKey='marker.id'
-		    coords='marker.coords'
-		    icon='{url:"images/icon.png"}'
-		    >
-		  </ui-gmap-marker>
+			<div ng-switch="marker.flowQuality">
+
+				<div ng-switch-when="1">
+				  <ui-gmap-marker
+				  	class="help_link"
+				    idKey='marker.id'
+				    coords='marker.coords'
+				    icon='{url:"images/iconGreen.png"}'
+				    >
+				  </ui-gmap-marker>
+				</div>
+
+				<div ng-switch-when="2">
+				  <ui-gmap-marker
+				  	class="help_link"
+				    idKey='marker.id'
+				    coords='marker.coords'
+				    icon='{url:"images/iconYellow.png"}'
+				    >
+				  </ui-gmap-marker>
+				</div>
+
+				<div ng-switch-when="3">
+				  <ui-gmap-marker
+				  	class="help_link"
+				    idKey='marker.id'
+				    coords='marker.coords'
+				    icon='{url:"images/iconRed.png"}'
+				    >
+				  </ui-gmap-marker>
+				</div>
+
+				<div ng-switch-default>
+					<ui-gmap-marker
+				  	class="help_link"
+				    idKey='marker.id'
+				    coords='marker.coords'
+				    icon='{url:"images/iconRed.png"}'
+				    >
+				  </ui-gmap-marker>
+				</div>
+
+			</div>
 		</div>
 	</ui-gmap-google-map>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <div class="container">
+    <p><span class="glyphicon glyphicon-tint"></span> More buzz since 2016!</p>
+    <button class="btn" ng-click="openStation()"></button>
+  </div>
 </div>
