@@ -29,7 +29,7 @@ angular.module('buzzwaterApp')
 
 
         angular.forEach(response.data.data, function(value, key) {
-          $scope.markers.push({id: key, coords: {latitude: value.LAT, longitude: value.LONG}, flowQuality: value.flowQuality});
+          $scope.markers.push({id: key, coords: {latitude: value.LAT, longitude: value.LONG}, flowQuality: value.flowQuality, name: value.Name});
           console.log(value);
         });
 
@@ -47,7 +47,11 @@ angular.module('buzzwaterApp')
 
     });
 
-    $scope.openStation = function () {
+    $scope.chosenStation = {name: "Pumppaamon nimi"};
+
+    $scope.openStation = function (stationName) {
+
+      $scope.chosenStation.name = stationName;
 
       var modalInstance = $uibModal.open({
         templateUrl: '../views/modals/station.html',
