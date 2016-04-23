@@ -81,6 +81,10 @@ body, html {
   color: orange;
 }
 
+.glyphicon-tint {
+  color: #4c5c82;
+}
+
 /* Main marketing message and sign up button */
 .jumbotron {
   text-align: center;
