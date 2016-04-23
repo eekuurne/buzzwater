@@ -29,7 +29,7 @@ angular.module('buzzwaterApp')
                     transitionDuration: 500,
                     xAxis: {
                         tickFormat: function(d){
-                            return d3.format(',f')(d);
+                            return d3.time.format('%x')(new Date(d));
                         }
                     },
                     yAxis1: {
@@ -44,13 +44,23 @@ angular.module('buzzwaterApp')
                     }
                 }
             };
-
-
-
-            $scope.data = [{key: 'series1', type: "line", yAxis: 1, values:[{x: 10, y: 20}, {x: 20, y: 35}, {x: 30, y:18}]},
-                   {key: 'series2',  type: "line", yAxis: 1,values:[{x: 10, y: 12}, {x: 20, y: 26}, {x: 30, y: 15}]},
-                   {key: 'series3',  type: "line", yAxis: 2,values:[{x: 10, y: 0.75}, {x: 20, y: 0.9}, {x: 30, y: 0.8}]},
-                   {key: 'series4',  type: "line", yAxis: 2,values:[{x: 10, y: 0.2}, {x: 20, y: 0.3}, {x: 30, y: 0.4}]}]
+            var start = new Date(2016, 3, 1);
+            $scope.data = [{key: 'series1', type: "line", yAxis: 1, values:[]}];
+            var values = [];
+            $http.get('http://10.144.72.169:8080/api/output/?station=JVP1020&start='+start.toJSON()).then(
+              function(data) {
+                data.data.data.forEach(function(value) {
+                  var date = new Date(value.STS)
+                  var newValue = {y:value.OUTPUT_QUANTITY || 0, x:date.getTime()};
+                  if (newValue.y > 2000) newValue.y = 0;
+                  values.push(newValue);
+                });
+                $scope.data[0].values = values.sort(function(a, b) {return (a.x-b.x)});
+              },
+              function(data) {
+                console.log(data);
+              }
+            );
 
 
   });
