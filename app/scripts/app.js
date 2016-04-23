@@ -17,7 +17,8 @@ angular
     'ngSanitize',
     'ngTouch',
     'uiGmapgoogle-maps',
-    'nvd3'
+    'nvd3',
+    'ui.bootstrap'
   ])
   .config(function ($routeProvider) {
     $routeProvider
