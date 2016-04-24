@@ -159,6 +159,7 @@ angular.module('buzzwaterApp')
 
       $scope.inlineOptions = {
         customClass: getDayClass,
+        minDate: new Date(),
         showWeeks: false
       };
 
