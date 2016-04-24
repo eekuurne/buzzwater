@@ -134,7 +134,7 @@ angular.module('buzzwaterApp')
 
       $scope.end = new Date();
       $scope.start = new Date();
-      $scope.start.setDate($scope.start.getDate()-14)
+      $scope.start.setDate($scope.start.getDate()-2)
       $scope.data = undefined;
 
       $scope.getData();
@@ -176,14 +176,14 @@ angular.module('buzzwaterApp')
       };
 
       $scope.prev = function() {
-        var period = $scope.end.getTime()-$scope.start.getTime()-86400000;
+        var period = $scope.end.getTime()-$scope.start.getTime();
         $scope.start = new Date($scope.start.getTime()-period);
         $scope.end = new Date($scope.end.getTime()-period);
         $scope.getData();
       }
 
       $scope.next = function() {
-        var period = $scope.end.getTime()-$scope.start.getTime()-86400000;
+        var period = $scope.end.getTime()-$scope.start.getTime();
         $scope.start = new Date($scope.start.getTime()+period);
         $scope.end = new Date($scope.end.getTime()+period);
         $scope.getData();
