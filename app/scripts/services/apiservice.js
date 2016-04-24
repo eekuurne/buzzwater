@@ -9,7 +9,7 @@
  */
 angular.module('buzzwaterApp')
   .service('apiService', function ($http) {
-    var url = 'http://localhost:8080/api/';
+    var url = 'http://10.144.72.169:8080/api/';
     this.getData = function(station, start, end, cb) {
       $http.get(url+'output/?station='+station+'&start='+start.toJSON()+'&end='+end.toJSON()).then(
         function(data) {

@@ -21,7 +21,7 @@ angular.module('buzzwaterApp')
       // Get marker coordinates from the database
       $http({
         method: 'GET',
-        url: 'http://localhost:8080/api/targets'
+        url: 'http://10.144.72.169:8080/api/targets'
       }).then(function successCallback(response) {
         console.log(response.data);
 
@@ -89,7 +89,7 @@ angular.module('buzzwaterApp')
      $scope.options = {
                 chart: {
                     type: 'multiChart',
-                    height: 600,
+                    height: 550,
                     margin : {
                         top: 30,
                         right: 60,
