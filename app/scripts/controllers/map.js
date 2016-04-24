@@ -71,25 +71,35 @@ angular.module('buzzwaterApp')
 
   }]);
 
- angular.module('buzzwaterApp').controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, apiService) {
+ angular.module('buzzwaterApp').controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, apiService, $window) {
      $scope.cancel = function () {
          $uibModalInstance.dismiss('cancel');
      };
 
      $scope.getData = function() {
        apiService.getData($scope.chosenStation.id, $scope.start, $scope.end, function(data) {
-         $scope.data = [];
-         $scope.data.push({key: 'output quantity', type: "line", yAxis: 1, values:data.outputs});
-         $scope.data.push({key: 'rainfall', type: "line", yAxis: 2, values:data.rainfalls});
-         $scope.data.push({key: 'runtime percentage', type: "line", yAxis: 2, values:data.percentages});
-         $scope.data.push({key: 'total runtime', type: "line", yAxis: 2, values:data.totals});
+         //$scope.data = [];
+         if (typeof($scope.data) === 'undefined') {
+           $scope.data = [];
+           $scope.data[0] = {key: 'output quantity', type: "line", yAxis: 1, values:data.outputs};
+           $scope.data[1] = {key: 'rainfall', type: "line", yAxis: 2, values:data.rainfalls};
+           $scope.data[2] = {key: 'runtime percentage', type: "line", yAxis: 2, values:data.percentages};
+           $scope.data[3] = {key: 'total runtime', type: "line", yAxis: 2, values:data.totals};
+         }
+         else {
+           $scope.data[0].values = data.outputs;
+           $scope.data[1].values = data.rainfalls;
+           $scope.data[2].values = data.percentages;
+           $scope.data[3].values = data.totals;
+         }
+
        });
      }
 
      $scope.options = {
                 chart: {
                     type: 'multiChart',
-                    height: 550,
+                    height: $window.innerHeight*0.7,
                     margin : {
                         top: 30,
                         right: 60,
@@ -152,7 +162,7 @@ angular.module('buzzwaterApp')
       $scope.end = new Date();
       $scope.start = new Date();
       $scope.start.setDate($scope.start.getDate()-14)
-      $scope.data = [];
+      $scope.data = undefined;
 
       $scope.getData();
 
