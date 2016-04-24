@@ -71,7 +71,7 @@ angular.module('buzzwaterApp')
 
   }]);
 
- angular.module('buzzwaterApp').controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, apiService) {
+ angular.module('buzzwaterApp').controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, apiService, $window) {
      $scope.cancel = function () {
          $uibModalInstance.dismiss('cancel');
      };
@@ -99,7 +99,7 @@ angular.module('buzzwaterApp')
      $scope.options = {
                 chart: {
                     type: 'multiChart',
-                    height: 550,
+                    height: $window.innerHeight*0.7,
                     margin : {
                         top: 30,
                         right: 60,
