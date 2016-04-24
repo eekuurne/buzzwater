@@ -192,16 +192,16 @@ angular.module('buzzwaterApp')
       };
 
       $scope.prev = function() {
-        var period = $scope.end.getDate()-$scope.start.getDate()-1;
-        $scope.start.setDate($scope.start.getDate()-period);
-        $scope.end.setDate($scope.end.getDate()-period);
+        var period = $scope.end.getTime()-$scope.start.getTime()-86400000;
+        $scope.start = new Date($scope.start.getTime()-period);
+        $scope.end = new Date($scope.end.getTime()-period);
         $scope.getData();
       }
 
       $scope.next = function() {
-        var period = $scope.end.getDate()-$scope.start.getDate()-1;
-        $scope.start.setDate($scope.start.getDate()+period);
-        $scope.end.setDate($scope.end.getDate()+period);
+        var period = $scope.end.getTime()-$scope.start.getTime()-86400000;
+        $scope.start = new Date($scope.start.getTime()+period);
+        $scope.end = new Date($scope.end.getTime()+period);
         $scope.getData();
       }
 

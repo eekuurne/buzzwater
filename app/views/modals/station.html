@@ -4,30 +4,32 @@
 <div class="modal-body">
   <nvd3 class="chart" options="options" data="data"></nvd3>
   <div class="row">
-    <div class="col-md-2">
-      <p class="input-group">
-        <input type="text" class="form-control" uib-datepicker-popup="dd.MM.yyyy" ng-model="start" is-open="popup1.opened" datepicker-options="dateOptions" clear-text=" " close-text="Close" />
-        <span class="input-group-btn">
-          <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
-        </span>
-      </p>
-    </div>
-    <div class="col-md-2">
-      <p class="input-group">
-        <input type="text" class="form-control" uib-datepicker-popup="dd.MM.yyyy" ng-model="end" is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
-        <span class="input-group-btn">
-          <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
-        </span>
-      </p>
-    </div>
-    <div class="col-md-4">
-      <p class="input-group">
-        <button type="button" class="btn btn-default" ng-click="next()">-></i></button>
-        <button type="button" class="btn btn-default" ng-click="prev()"><-</i></button>
-        <button type="button" class="btn btn-default" ng-click="getData()">VALITSE</i></button>
-    </div>
+
   </div>
 </div>
 <div class="modal-footer">
+  <div class="col-md-2">
+    <div class="input-group">
+      <input type="text" class="form-control" uib-datepicker-popup="dd.MM.yyyy" ng-model="start" is-open="popup1.opened" datepicker-options="dateOptions" clear-text=" " close-text="Close" />
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+      </span>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="input-group">
+      <input type="text" class="form-control" uib-datepicker-popup="dd.MM.yyyy" ng-model="end" is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+      </span>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="input-group">
+      <button type="button" class="btn btn-default" ng-click="next()">-></i></button>
+      <button type="button" class="btn btn-default" ng-click="prev()"><-</i></button>
+      <button type="button" class="btn btn-default" ng-click="getData()">VALITSE</i></button>
+    </div>
+  </div>
     <button class="btn" type="button" ng-click="cancel()">SULJE</button>
 </div>
