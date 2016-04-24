@@ -134,7 +134,7 @@ angular.module('buzzwaterApp')
 
       $scope.end = new Date();
       $scope.start = new Date();
-      $scope.start.setDate($scope.start.getDate()-2)
+      $scope.start = new Date($scope.start.getTime()-2*86400000);
       $scope.data = undefined;
 
       $scope.getData();
