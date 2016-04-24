@@ -21,7 +21,7 @@ angular.module('buzzwaterApp')
       // Get marker coordinates from the database
       $http({
         method: 'GET',
-        url: 'http://10.144.72.169:8080/api/targets'
+        url: 'http://localhost:8080/api/targets'
       }).then(function successCallback(response) {
         console.log(response.data);
 
@@ -89,7 +89,7 @@ angular.module('buzzwaterApp')
      $scope.options = {
                 chart: {
                     type: 'multiChart',
-                    height: 450,
+                    height: 600,
                     margin : {
                         top: 30,
                         right: 60,
@@ -149,8 +149,9 @@ angular.module('buzzwaterApp')
                 }
             };
 
-      $scope.start = new Date(2016, 0, 1);
-      $scope.end = new Date(2016, 1, -1);
+      $scope.end = new Date();
+      $scope.start = new Date();
+      $scope.start.setDate($scope.start.getDate()-14)
       $scope.data = [];
 
       $scope.getData();
@@ -158,15 +159,13 @@ angular.module('buzzwaterApp')
 
       $scope.inlineOptions = {
         customClass: getDayClass,
-        minDate: new Date(),
-        showWeeks: true
+        showWeeks: false
       };
 
       $scope.dateOptions = {
         formatYear: 'yy',
-        maxDate: new Date(2020, 5, 22),
-        minDate: new Date(),
-        startingDay: 1
+        maxDate: new Date(2020, 0, 0),
+        minDate: new Date()
       };
 
       $scope.toggleMin = function() {
@@ -191,6 +190,20 @@ angular.module('buzzwaterApp')
       $scope.popup2 = {
         opened: false
       };
+
+      $scope.prev = function() {
+        var period = $scope.end.getDate()-$scope.start.getDate()-1;
+        $scope.start.setDate($scope.start.getDate()-period);
+        $scope.end.setDate($scope.end.getDate()-period);
+        $scope.getData();
+      }
+
+      $scope.next = function() {
+        var period = $scope.end.getDate()-$scope.start.getDate()-1;
+        $scope.start.setDate($scope.start.getDate()+period);
+        $scope.end.setDate($scope.end.getDate()+period);
+        $scope.getData();
+      }
 
       function getDayClass(data) {
         var date = data.date,
