@@ -14,9 +14,6 @@ angular.module('buzzwaterApp')
 
       $scope.map = { center: { latitude: 60.26, longitude: 24.92 }, zoom: 11 };
       $scope.markers = [];
-      $scope.options = {icon:'url/images/icon.png'};
-      $scope.formPassword = '';
-
 
       // Get marker coordinates from the database
       $http({
@@ -24,21 +21,9 @@ angular.module('buzzwaterApp')
         url: 'http://10.144.72.169:8080/api/targets'
       }).then(function successCallback(response) {
         console.log(response.data);
-
-
-
-
         angular.forEach(response.data.data, function(value, key) {
           $scope.markers.push({id: key, coords: {latitude: value.LAT, longitude: value.LONG}, flowQuality: value.flowQuality, name: value.Name});
         });
-
-
-
-
-        for (var i = 0; i < response.data.data.length; i++) {
-
-          $scope.markers[i] = {id: i, coords: {latitude: response.data.data[i].LAT, longitude: response.data.data[i].LONG}};
-        };
       }, function errorCallback(response) {
         // called asynchronously if an error occurs
         // or server returns response with an error status.
@@ -60,12 +45,10 @@ angular.module('buzzwaterApp')
         windowClass: 'app-modal-window',
       });
 
-    modalInstance.result.then(function (formPassword) {
-      if ($scope.checkPassword(formPassword)) {
-        $location.path('/main');
-      }
+    modalInstance.result.then(function () {
+      console.log('??');
     }, function () {
-      console.log('Exit canceled');
+      console.log('Canceled.');
     });
   };
 
@@ -99,7 +82,7 @@ angular.module('buzzwaterApp')
      $scope.options = {
                 chart: {
                     type: 'multiChart',
-                    height: $window.innerHeight*0.7,
+                    height: $window.innerHeight*0.65,
                     margin : {
                         top: 30,
                         right: 60,

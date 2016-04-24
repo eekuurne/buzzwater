@@ -137,6 +137,11 @@ body, html {
   margin-bottom: 6vh;
 }
 
+caption {
+  font-size: 25px;
+  color: #222222;
+}
+
 .help {
     background-color: #FFFF73;
     border-radius: 10px;
