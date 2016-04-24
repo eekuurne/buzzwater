@@ -15,7 +15,10 @@ var connection = new sql.Connection({
   database:   'AWR'
 });
 
-connection.connect();
+var initialPumpData = {};
+connection.connect().then(function() {
+  //getInitialPumpUptimeData();
+});
 
 var router = express.Router();
 
@@ -23,13 +26,25 @@ router.get('/', function(req, res) {
   res.json({ message: 'NYT SITÄ DATAA SITTEN' });
 });
 
+router.get('/initialPumpData', function(req, res) {
+  console.log(initialPumpData);
+
+  res.json({
+    success: true,
+    data: initialPumpData
+  });
+});
+
 router.get('/targets', function(req, res) {
 
   var targetsWithFlowQuality = {};
 
   var q = 'SELECT Code, Target_Type, Name, LAT, LONG FROM HSY_TARGETS WHERE Target_Type = \'JVP\' AND LAT IS NOT NULL AND LONG IS NOT NULL';
+  console.log(q);
   var sqlReq = new sql.Request(connection).query(q)
   .then(function(targetResult) {
+
+    console.log('number of target results: ' + targetResult.length);
 
     for (var i = 0; i < targetResult.length; i++) {
       var tar = targetResult[i];
@@ -38,9 +53,13 @@ router.get('/targets', function(req, res) {
     }
 
     var flowQualityQuery = 'SELECT STATION, QUALITY FROM FLOW_QUALITY';
+    console.log(flowQualityQuery);
+
     var flowQualitySqlReq = new sql.Request(connection).query(flowQualityQuery)
     .then(function(flowQualityResult) {
 
+      console.log('number of flowQuality results: ' + flowQualityResult.length);
+      
       for (var i = 0; i < flowQualityResult.length; i++) {
         var flowQuality = flowQualityResult[i];
         if (targetsWithFlowQuality[flowQuality.STATION]) {
@@ -63,7 +82,7 @@ router.get('/targets', function(req, res) {
     });
 
   }).catch(function(err) {
-    console.log('query meni vähä rikki');
+    console.log('query meni (' + q + ') vähä rikki');
 
     res.json({
       success: false,
@@ -219,7 +238,46 @@ app.use(function(req, res, next) {
 
 
 app.listen(port);
-console.log('Magic happens on port ' + port);
+console.log('Listening on port ' + port);
+
+function getInitialPumpUptimeData() {
+
+  var q = 'SELECT TOP 5 Code, Target_Type, Pump_Count FROM HSY_TARGETS WHERE Target_Type = \'JVP\' AND LAT IS NOT NULL AND LONG IS NOT NULL';
+
+  var sqlReq = new sql.Request(connection).query(q)
+  .then(function(targetResult) {
+
+    var cur = new Date();
+    var start = new Date(cur.getTime() - 60000 * 60 * 24 * 14).toJSON();
+
+    for (var i = 0; i < targetResult.length; i++) {
+      var tar = targetResult[i];
+      var key = tar.Target_Type + tar.Code;
+      var pumpCount = tar.Pump_Count;
+
+      var pumpDataQuery = 'SELECT STATION, STS, P1_RUN_TIME, P2_RUN_TIME, P3_RUN_TIME, P4_RUN_TIME, P5_RUN_TIME, P6_RUN_TIME FROM HSY_MES_PUMP_1H WHERE STS > \'' + start + '\' AND STATION = \'' + key + '\'';
+      var pumpDataSqlReq = new sql.Request(connection).query(pumpDataQuery)
+      .then(function(pumpDataResult) {
+
+        pumpDataResult.Pump_Count = pumpCount;
+        console.log(pumpDataResult);
+        initialPumpData[pumpDataResult.STATION] = calculatePumpUptimeData(pumpDataResult);
+
+      }).catch(function(err) {
+        console.log('query (' + pumpDataQuery + ') meni vähä rikki');
+      });
+
+    }
+
+  }).catch(function(err) {
+    console.log('query meni vähä rikki');
+
+    res.json({
+      success: false,
+      data: err
+    });
+  });
+}
 
 function calculatePumpUptimeData(d) {
 
