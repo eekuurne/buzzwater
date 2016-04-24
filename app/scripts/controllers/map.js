@@ -8,12 +8,16 @@
  * Controller of the buzzwaterApp
  */
 angular.module('buzzwaterApp')
-  .controller('MapCtrl', ['$scope', '$http', 'uiGmapGoogleMapApi', '$uibModal', function ($scope, $http, uiGmapGoogleMapApi, $uibModal) {
+  .controller('MapCtrl', ['$scope', '$http', 'uiGmapGoogleMapApi', '$uibModal', 'apiService', function ($scope, $http, uiGmapGoogleMapApi, $uibModal, apiService) {
 
     uiGmapGoogleMapApi.then(function(maps) {
 
       $scope.map = { center: { latitude: 60.26, longitude: 24.92 }, zoom: 11 };
       $scope.markers = [];
+
+      apiService.getTargets(function(data) {
+        $scope.markers = data;
+      });
 
       // Get marker coordinates from the database
       $http({

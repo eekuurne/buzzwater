@@ -10,6 +10,25 @@
 angular.module('buzzwaterApp')
   .service('apiService', function ($http) {
     var url = 'http://10.144.72.169:8080/api/';
+    var markers = [];
+    this.getTargets = function(cb) {
+      if (markers.length == 0) {
+        $http.get(url+'targets').then(
+          function(data) {
+            angular.forEach(data.data.data, function(value, key) {
+              markers.push({id: key, coords: {latitude: value.LAT, longitude: value.LONG}, flowQuality: value.flowQuality, name: value.Name});
+            });
+            cb(markers)
+          },
+          function(data) {
+            console.log(data);
+          });
+      } else {
+        cb(markers);
+      }
+    }
+
+
     this.getData = function(station, start, end, cb) {
       $http.get(url+'output/?station='+station+'&start='+start.toJSON()+'&end='+end.toJSON()).then(
         function(data) {

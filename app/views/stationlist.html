@@ -1,22 +1,19 @@
 <div class="container">
 	<br><br><br>
-	<input type="text" placeholder="Etsi nimellä"/>
+	<input type="text" placeholder="Etsi nimellä" ng-model="search.name"/>
 	<table class="table">
 		<caption>Pumppaamot</caption>
-	    <tr>
-		    <td><a href="#/stationlist" >Esimerkkipumppaamo</a></td>
-		    <td>Dataa</td> 
-		    <td>Dataa</td>
-		  </tr>
-		  <tr>
-		    <td><a href="#/stationlist" >Esimerkkipumppaamo 2</a></td>
-		    <td>Dataa</td> 
-		    <td>Dataa</td>
-		  </tr>
-		  <tr>
-		    <td><a href="#/stationlist" >Esimerkkipumppaamo 3</a></td>
-		    <td>Dataa</td> 
-		    <td>Dataa</td>
+			<tr>
+				<th>Nimi</th>
+				<th>Flow Quality</th>
+				<th>Latitude</th>
+				<th>Longitude</th>
+			</tr>
+	    <tr ng-repeat="station in markers | filter: search | orderBy: 'name'">
+		    <td><a ng-click="openStation(station)">{{station.name}}</a></td>
+		    <td>{{station.flowQuality}}</td>
+				<td>{{station.coords.latitude}}</td>
+				<td>{{station.coords.longitude}}</td>
 		  </tr>
 	</table>
 </div>
