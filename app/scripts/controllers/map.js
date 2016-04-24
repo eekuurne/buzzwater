@@ -19,20 +19,6 @@ angular.module('buzzwaterApp')
         $scope.markers = data;
       });
 
-      // Get marker coordinates from the database
-      $http({
-        method: 'GET',
-        url: 'http://10.144.72.169:8080/api/targets'
-      }).then(function successCallback(response) {
-        console.log(response.data);
-        angular.forEach(response.data.data, function(value, key) {
-          $scope.markers.push({id: key, coords: {latitude: value.LAT, longitude: value.LONG}, flowQuality: value.flowQuality, name: value.Name});
-        });
-      }, function errorCallback(response) {
-        // called asynchronously if an error occurs
-        // or server returns response with an error status.
-      });
-
     });
 
     $scope.chosenStation = {name: "Pumppaamon nimi"};
